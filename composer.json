@@ -1,0 +1,36 @@
+{
+  "name": "evgenidev/yii2-simple-oauth2server",
+  "description": "Simple PHP OAuth2 Server for Yii2 with soft delete",
+  "keywords": [
+    "yii2",
+    "extension",
+    "module",
+    "oauth",
+    "oauth2"
+  ],
+  "license": "proprietary",
+  "type": "yii2-extension",
+  "authors": [
+    {
+      "name": "Miroshnichenko Evgeniy",
+      "email": "evgeni_mir@mail.ru"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.0",
+    "yiisoft/yii2": ">=2.0.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "EvgeniDev\\Yii2\\OAuth2Server\\": "/src",
+      "EvgeniDev\\Yii2\\OAuth2Server\\Services\\": "/src/services",
+      "EvgeniDev\\Yii2\\OAuth2Server\\Records\\": "/src/records",
+      "EvgeniDev\\Yii2\\OAuth2Server\\Queries\\": "/src/queries",
+      "EvgeniDev\\Yii2\\OAuth2Server\\Forms\\": "/src/forms",
+      "EvgeniDev\\Yii2\\OAuth2Server\\Exceptions\\": "/src/exceptions",
+      "EvgeniDev\\Yii2\\OAuth2Server\\Controllers\\": "/src/controllers",
+      "EvgeniDev\\Yii2\\OAuth2Server\\Comnonents\\": "/src/components",
+      "EvgeniDev\\Yii2\\OAuth2Server\\Commands\\": "/src/commands"
+    }
+  }
+}

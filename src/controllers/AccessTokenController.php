@@ -41,7 +41,7 @@ final class AccessTokenController extends Controller
             return $this->asJson([
                 'error' => 'Invalid Condition',
                 'error_description' => 'Invalid Condition.',
-            ]);
+            ], 500);
         }
 
         $authCode->delete();

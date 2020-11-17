@@ -13,21 +13,30 @@ use yii\web\Response;
 abstract class Controller extends \yii\web\Controller
 {
     /**
-     * В отличие от стандартного функционала Yii, данный метод возвращает Response,
-     * позволяя добиться чёткой статической типизации действий контроллеров, а так же
-     * не требует указания названия шаблона.
-     *
+     * Extended render function.
+     * 
      * {@inheritDoc}
-     *
-     * @param string|array|null $view Название шаблона представления или данные, которые необходимо передать в шаблон
-     * представления по-умолчанию.
      */
     public function render($view = null, $params = []): Response
     {
         $response = Yii::$app->getResponse();
+
         $response->data = $view === null || is_array($view)
             ? parent::render("@views/{$this->action->controller->id}", $view ?: [])
             : parent::render($view, $params);
+
+        return $response;
+    }
+
+    /**
+     * Format data.
+     */
+    public function response(array $data, int $httpStatusCode = 200): Response
+    {
+        $response = Yii::$app->getResponse();
+        $response->format = $this->module->responseFormat;
+        $response->data = $data;
+        $response->statusCode = $httpStatusCode;
 
         return $response;
     }

@@ -28,6 +28,7 @@ final class AuthorizeController extends Controller
     {
         $request = Yii::$app->getRequest();
         $webUser = Yii::$app->getUser();
+        $session = Yii::$app->getSession();
 
         $client = (new OAuthRequestService())->checkClient($request);
 
@@ -55,7 +56,7 @@ final class AuthorizeController extends Controller
                     return $this->redirect($redirectUrl.'?'.http_build_query(['error' => 'Access deny']));
                 }
 
-                $form->setAttributes($request->post('OAuthAuthorizeForm'));
+                $form->setAttributes($request->post('OAuthAuthorizeForm') ?? $request->post());
 
                 if ($form->validate() === false) {
                     throw new ValidationException($form);
@@ -64,26 +65,45 @@ final class AuthorizeController extends Controller
                 try {
                     (new OAuthApprovalCreateService())($form, $webUser);
                 } catch (Exception $e) {
-                    Yii::$app->getSession()->addFlash('danger', Module::t('app', 'oauth.approval.error'));
+                    if (false === $this->module->spaApp) {
+                        $session->addFlash('danger', Module::t('app', 'oauth.approval.error'));
 
-                    return $this->redirect(['/']);
+                        return $this->redirect(['/']);
+                    }
+
+                    return $this->response([
+                        'error' => Module::t('app', 'oauth.approval.error'),
+                    ], 500);
                 }
             } else {
-                return $this->render(Yii::$app->getModule('oauth2')->authorizeView ?? 'index', [
-                    'client' => $client,
-                    'user' => $webUser->getIdentity(),
-                    'form' => $form,
+                if (false === $this->module->spaApp) {
+                    return $this->render($this->module->authorizeView ?? 'index', [
+                        'client' => $client,
+                        'user' => $webUser->getIdentity(),
+                        'form' => $form,
+                        'state' => $request->get('state'),
+                    ]);
+                }
+                
+                return $this->response([
+                    'clientName' => $client->getName(),
                     'state' => $request->get('state'),
-                ]);
+                ], 201);
             }
         }
 
         try {
             $code = (new OAuthCodeCreateService())($client, $webUser);
         } catch (Exception $e) {
-            Yii::$app->getSession()->addFlash('danger', Module::t('app', 'oauth.error'));
+            if (false === $this->module->spaApp) {
+                $session->addFlash('danger', Module::t('app', 'oauth.error'));
 
-            return $this->redirect(['/']);
+                return $this->redirect(['/']);
+            }
+
+            return $this->response([
+                'error' => Module::t('app', 'oauth.approval.error'),
+            ], 500);
         }
 
         $redirectUrl .= '?code='.$code->getAuthorizationCode();

@@ -7,15 +7,39 @@ namespace EvgeniDev\Yii2\OAuth2Server;
 use yii\console\Application;
 use yii\i18n\PhpMessageSource;
 use Yii;
+use yii\web\Response;
 
 /**
  * OAuth2 server Module.
  */
 class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 {
+    /**
+     * Access token lifetime.
+     */
     public $accessTokenLifetime;
+
+    /**
+     * User identity className.
+     */
     public $identityClass;
+
+    /**
+     * Authorize view path.
+     */
     public $authorizeViewPath;
+
+    /**
+     * Default response format.
+     */
+    public $responseFormat
+        = Response::FORMAT_XML;
+
+    /**
+     * If the app is SPA.
+     */
+    public $spaApp
+        = false;
 
     /**
      * {@inheritDoc}

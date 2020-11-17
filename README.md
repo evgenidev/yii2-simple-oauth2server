@@ -57,6 +57,23 @@ The basic authorize view you can find here:
  
 `./vendor/yii2-simple-oauth2server/src/views/authorize/index.php`
 
+For SPA application you should configure spaApp parameter. By default, you will get a response from server on json format. 
+If you need other response format, you can add a responseFormat parameter:
+
+```php
+use yii\web\Response;
+
+'modules' => [
+    'oauth2' => [
+        'class' => \EvgeniDev\Yii2\OAuth2Server\Module::class,
+        'accessTokenLifetime' => 3600 * 12,
+        'identityClass' => \app\models\User::class,
+        'spaApp' => true,
+        'responseFormat' => Response::FORMAT_XML,
+    ],
+],
+```
+
 The next step you should run migration.
 
 ```shell script

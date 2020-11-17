@@ -22,10 +22,10 @@ final class OAuthRequestService
     public function checkClient(Request $request)
     {
         if (empty($request->get('response_type')) || empty($request->get('client_id')) || empty($request->get('redirect_uri'))) {
-            return $this->asJson([
+            return $this->response([
                 'error' => 'Invalid Request',
                 'error_description' => 'The request is missing a required parameter. Check: response_type, client_id, redirect_uri',
-            ]);
+            ], 500);
         }
 
         $client = OAuthClient::find()
@@ -34,10 +34,10 @@ final class OAuthRequestService
             ->one();
 
         if ($client === null) {
-            return $this->asJson([
+            return $this->response([
                 'error' => 'Invalid Client',
                 'error_description' => 'Client Authentication failed.',
-            ]);
+            ], 500);
         }
 
         return $client;
@@ -49,10 +49,10 @@ final class OAuthRequestService
     public function checkCode(Request $request)
     {
         if (empty($request->post('grant_type')) || empty($request->post('client_id')) || empty($request->post('client_secret')) || empty($request->post('redirect_uri')) || empty($request->post('code'))) {
-            return $this->asJson([
+            return $this->response([
                 'error' => 'Invalid Request',
                 'error_description' => 'The request is missing a required parameter. Check: grant_type, client_id, client_secret, redirect_uri, code.',
-            ]);
+            ], 500);
         }
 
         $authCode = OAuthAuthorizationCode::find()
@@ -61,10 +61,10 @@ final class OAuthRequestService
             ->one();
 
         if ($authCode === null) {
-            return $this->asJson([
+            return $this->response([
                 'error' => 'Invalid Client',
                 'error_description' => 'Invalid Code or Client.',
-            ]);
+            ], 500);
         }
 
         return $authCode;
@@ -89,23 +89,24 @@ final class OAuthRequestService
         if ($client === null || $approval === null) {
             $authCode->delete();
 
-            return $this->asJson([
+            return $this->response([
                 'error' => 'Invalid Client',
                 'error_description' => 'Invalid Client.',
-            ]);
+            ], 500);
         }
 
         return $approval;
     }
 
     /**
-     * Sends data formatted as JSON.
+     * Format data.
      */
-    private function asJson(array $data): Response
+    public function response(array $data, int $httpStatusCode = 200): Response
     {
         $response = Yii::$app->getResponse();
-        $response->format = Response::FORMAT_XML;
+        $response->format = $this->module->responseFormat;
         $response->data = $data;
+        $response->statusCode = $httpStatusCode;
 
         return $response;
     }

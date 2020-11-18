@@ -104,7 +104,7 @@ final class OAuthRequestService
     public function response(array $data, int $httpStatusCode = 200): Response
     {
         $response = Yii::$app->getResponse();
-        $response->format = $this->module->responseFormat;
+        $response->format = Yii::$app->getModule('oauth2')->responseFormat;
         $response->data = $data;
         $response->statusCode = $httpStatusCode;
 

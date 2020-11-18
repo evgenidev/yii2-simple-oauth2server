@@ -33,7 +33,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
      * Default response format.
      */
     public $responseFormat
-        = Response::FORMAT_XML;
+        = Response::FORMAT_JSON;
 
     /**
      * If the app is SPA.

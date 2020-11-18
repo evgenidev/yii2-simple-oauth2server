@@ -14,6 +14,10 @@ use EvgeniDev\Yii2\OAuth2Server\Services\OAuthCodeCreateService;
 use EvgeniDev\Yii2\OAuth2Server\Services\OAuthRequestService;
 use Exception;
 use Yii;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
+use yii\filters\ContentNegotiator;
+use yii\filters\RateLimiter;
 use yii\web\Response;
 
 /**
@@ -21,6 +25,35 @@ use yii\web\Response;
  */
 final class AuthorizeController extends Controller
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function behaviors(): array
+    {
+        if (false === $this->module->spaApp) {
+            return parent::behaviors();
+        }
+
+        return [
+            'contentNegotiator' => [
+                'class' => ContentNegotiator::class,
+                'formats' => [
+                    'application/json' => Response::FORMAT_JSON,
+                ],
+            ],
+            'rateLimiter' => [
+                'class' => RateLimiter::class,
+            ],
+            'authenticator' => [
+                'except' => ['index'],
+                'class' => CompositeAuth::class,
+                'authMethods' => [
+                    HttpBearerAuth::class,
+                ],
+            ],
+        ];
+    }
+
     /**
      * Client Authorization.
      */

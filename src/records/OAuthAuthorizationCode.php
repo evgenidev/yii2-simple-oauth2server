@@ -46,17 +46,6 @@ class OAuthAuthorizationCode extends ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public static function deleteAll($condition = null, $params = []): int
-    {
-        $command = ActiveRecord::getDb()->createCommand();
-        $command->delete(static::tableName(), $condition, $params);
-
-        return $command->execute();
-    }
-
     public function getAuthorizationCode(): string
     {
         return $this->getAttribute('authorizationCode');

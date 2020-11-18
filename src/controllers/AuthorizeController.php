@@ -37,8 +37,8 @@ final class AuthorizeController extends Controller
         }
 
         if ($webUser->getIsGuest()) {
-            $redirectParam = false === strripos($webUser->loginUrl, '?') ? '?redirectUrl' : '&redirectUrl';
-            return $this->redirect([$webUser->loginUrl.$redirectParam.'='.urlencode($request->getAbsoluteUrl())]);
+            $redirectParam = false === strripos($webUser->loginUrl, '?') ? '?' : '&';
+            return $this->redirect([$webUser->loginUrl.$redirectParam.'redirectUrl='.urlencode($request->getAbsoluteUrl())]);
         }
 
         $approval = OAuthApproval::find()
@@ -58,7 +58,7 @@ final class AuthorizeController extends Controller
 
                 $form->setAttributes($request->post('OAuthAuthorizeForm') ?? $request->post());
 
-                if ($form->validate() === false) {
+                if (false === $form->validate()) {
                     throw new ValidationException($form);
                 }
 

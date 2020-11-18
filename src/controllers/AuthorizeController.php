@@ -37,8 +37,14 @@ final class AuthorizeController extends Controller
         }
 
         if ($webUser->getIsGuest()) {
-            $redirectParam = false === strripos($webUser->loginUrl, '?') ? '?' : '&';
-            return $this->redirect([$webUser->loginUrl.$redirectParam.'redirectUrl='.urlencode($request->getAbsoluteUrl())]);
+            if (false === $this->module->spaApp) {
+                $redirectParam = false === strripos($webUser->loginUrl, '?') ? '?' : '&';
+                return $this->redirect([$webUser->loginUrl.$redirectParam.'redirectUrl='.urlencode($request->getAbsoluteUrl())]);
+            }
+
+            return $this->response([
+                'error' => 'Unauthorized',
+            ], 401);
         }
 
         $approval = OAuthApproval::find()

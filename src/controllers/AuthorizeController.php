@@ -44,6 +44,7 @@ final class AuthorizeController extends Controller
 
             return $this->response([
                 'error' => 'Unauthorized',
+                'redirectUrl' => $request->getAbsoluteUrl(),
             ], 401);
         }
 

@@ -111,7 +111,7 @@ class OAuthClient extends ActiveRecord
         return $this;
     }
 
-    public function setClientSecret(string $clientSecret)
+    public function setClientSecret(string $clientSecret): self
     {
         $this->setAttribute('clientSecret', $clientSecret);
 

@@ -24,7 +24,7 @@ final class AuthorizeController extends Controller
     /**
      * Client Authorization.
      */
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         $request = Yii::$app->getRequest();
         $webUser = Yii::$app->getUser();

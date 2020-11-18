@@ -19,7 +19,7 @@ final class AccessTokenController extends Controller
     /**
      * Generates the Access Token.
      */
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         $request = Yii::$app->getRequest();
 
@@ -38,7 +38,7 @@ final class AccessTokenController extends Controller
         try {
             $token = (new OAuthAccessTokenCreateService())($approval);
         } catch (Exception $e) {
-            return $this->asJson([
+            return $this->response([
                 'error' => 'Invalid Condition',
                 'error_description' => 'Invalid Condition.',
             ], 500);
@@ -46,7 +46,7 @@ final class AccessTokenController extends Controller
 
         $authCode->delete();
 
-        return $this->asJson([
+        return $this->response([
             'access_token' => $token->getAccessToken(),
             'expires_at' => $token->getExpiresAt(),
         ]);
